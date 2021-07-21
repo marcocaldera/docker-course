@@ -1,0 +1,8 @@
+# In this way we can't overwrite the node_modules folder inside the container with the one create on our host machine
+node_modules
+
+# Inutile che sia presente anche all'interno di un'image
+Dockerfile
+
+# Inutile che .git sia presente nell'image
+.git
