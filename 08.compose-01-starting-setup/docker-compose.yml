@@ -8,18 +8,43 @@ version: "3.8"
 services:
   mongodb:
     image: mongo
+    # container_name: mongodb
     volumes:
-      - data:/data/db # for data persist
+      - data:/data/db # named volume for data persist
     # environment:
     #   MONGO_INITDB_ROOT_USERNAME: root
     #   MONGO_INITDB_ROOT_PASSWORD: example
     env_file:
       - ./env/mongo.env
 
-#   backend:
+  backend:
+    build: ./backend
+    # build:
+    #     context: ./backend
+    #     dockerfile: DockerFile
+    ports:
+      - "80:80"
+    volumes:
+      - logs:/app/logs # named volume for data persist
+      - ./backend:/app # bind mount
+      - /app/node_modules # anonymous volume
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - mongodb # mongodb has to be up and running before the backend container has to start
 
-#   frontend:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src # bind mount
+    stdin_open: true # equals to use -it in cli
+    tty: true # equals to use -it in cli
+    depends_on:
+      - backend
 
 # List all the named volume here: (it's mandatory)
 volumes:
   data: # named volume used in mongodb container
+  logs: # named volume used in backend container
