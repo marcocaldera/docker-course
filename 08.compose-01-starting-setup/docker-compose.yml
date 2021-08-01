@@ -1,0 +1,25 @@
+# Note:
+# Automatically all the container in the same docker compose file
+# will also be in the same network (by default without specifing anything)
+
+# Version of official docker compose
+# https://docs.docker.com/compose/compose-file/
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    volumes:
+      - data:/data/db # for data persist
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example
+    env_file:
+      - ./env/mongo.env
+
+#   backend:
+
+#   frontend:
+
+# List all the named volume here: (it's mandatory)
+volumes:
+  data: # named volume used in mongodb container
