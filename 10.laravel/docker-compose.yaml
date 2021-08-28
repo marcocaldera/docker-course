@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   server: # server
-    image: "nginx:stable-alpine"
+    build:
+      context: . # nginx need to copy some file from ../ inside the image so we cant already specify ./dockerfiles
+      dockerfile: dockerfiles/nginx.dockerfile
     ports:
       - "8000:80"
     volumes:
@@ -13,8 +15,8 @@ services:
       - mysql
   php: # php interpreter
     build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
     volumes:
       - ./src:/var/www/html:delegated # delegated is for performance optimization (changes are reflted in batch and not instantly)
   mysql:
@@ -29,14 +31,14 @@ services:
       - ./src:/var/www/html
   artisan:
     build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
     volumes:
       - ./src:/var/www/html
-    entrypoint: ["php", "/var/www/html/artisan"]
+    entrypoint: ["php", "/var/www/html/artisan"] # you can add dockerfile option inside the docker-compose (but it's not recommended)
   npm:
     image: node:14
-    working_dir: /var/www/html
-    entrypoint: ["npm"]
+    working_dir: /var/www/html # you can add dockerfile option inside the docker-compose (but it's not recommended)
+    entrypoint: ["npm"] # you can add dockerfile option inside the docker-compose (but it's not recommended)
     volumes:
       - ./src:/var/www/html
